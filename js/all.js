@@ -6,6 +6,7 @@ const API = 'https://f111-114-32-150-22.ap.ngrok.io';
 const getMembersApi = `${API}/member/memberInfo`;
 let memberModal = null;
 let delMemberModal = null;
+const loginCheckApi = `${API}/user/loginCheck`;
 
 createApp({
     data() {
@@ -15,9 +16,25 @@ createApp({
             members: [],
             tempMember: {},
             isNewMember: false, // 用來確認是新增或是編輯
+            searchResult: [], //搜尋結果陣列，初始預設為空陣列
+            searchdata: '' //搜尋關鍵字，初始預設為空字串
         }
     },
     methods: {
+        // 確認登入
+        // loginCheck(account, userToken) {
+        //     axios
+        //         .post(`${loginCheckApi}`)
+        //         .then((response) => {
+        //             console.log(response);
+        //             this.getMembers();
+        //         })
+        //         .catch((error) => {
+        //             alert(error);
+        //             window.location = `login.html`;
+        //         })
+        // },
+
         // 取得用戶車籍資料 (members)
         getMembers() {
             axios
@@ -53,12 +70,12 @@ createApp({
         updateMember() {
             let updateMemberApi = `${API}/member/createMember`;
             let method = 'post';
-            if (!this.isNewMember){
+            if (!this.isNewMember) {
                 updateMemberApi = `${API}/member/updateMember/${this.tempMember.userId}`;
                 method = 'put'
             }
             axios
-                [method](updateMemberApi, { target: this.tempMember })
+            [method](updateMemberApi, { target: this.tempMember })
                 .then(() => {
                     this.getMembers(); //新增後重新取得用戶車籍列表
                     memberModal.hide();
@@ -68,21 +85,38 @@ createApp({
                 })
         },
         // 刪除用戶車籍
-        deleteMember(userId) {
-            let deleteMemberApi = `${API}/member/deleteMember/${this.tempMember.userId}`;
+        deleteMember() {
+            const deleteMemberApi = `${API}/member/deleteMember/${this.tempMember.userId}`;
             axios
-                .patch(deleteMemberApi, { target: this.tempMember.userId})
-                .then((response) => {
+                .patch(deleteMemberApi, { target: this.tempMember.userId })
+                .then(() => {
                     this.getMembers(); //刪除後重新取得用戶車籍列表
                     delMemberModal.hide();
-                    
+
                 })
                 .catch((error) => {
                     alert(error);
                 })
         },
+        // 搜尋用戶車籍
+        searchMember(searchdata) {
+            const searchMemberApi = `${API}/member/searchMember`;
+            axios
+                .post(searchMemberApi, { target: {searchdata:this.searchdata} })
+                .then((response) => {
+                    // console.log(response.data);
+                    // console.log(this.searchdata);
+                    this.members = response.data;
+                })
+                .catch((error) => {
+                    alert(error);
+                })
+        }
     },
     mounted() {
+        // const userToken = '';
+        // axios.default.headers.common['Authorization'] = userToken;
+        // this.loginCheck();
         this.getMembers();
         // 初始化 bootstrap modal
         memberModal = new bootstrap.Modal('#memberModal');
