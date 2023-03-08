@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台中果菜市場</title>
+    <link rel="icon" type="image/png" href="./images/logo.jpg" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/all.css">
+    <link rel="stylesheet" href="./css/user.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container-fluid px-0">
+            <nav class="px-2 py-2 mb-3">
+                <div class="d-flex justify-content-between">
+                    <ul class="nav nav-pills mb-3 align-items-center" id="pills-tab" role="tablist">
+                        <li><img src="./images/logo.jpg" alt="LOGO" width="50"></li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-member-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-member" type="button" role="tab" aria-controls="pills-member"
+                                aria-selected="true">用戶車籍</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-history-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-history" type="button" role="tab" aria-controls="pills-history"
+                                aria-selected="false">紀錄查詢</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-user-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-user" type="button" role="tab" aria-controls="pills-user"
+                                aria-selected="false">使用者管理</button>
+                        </li>
+                    </ul>
+                    <div class="d-flex flex-column">
+                        <span class="text-white mb-3">{{ today }}</span>
+                        <button type="button" class="btn text-white text-center">登出人員1</button>
+                    </div>
+                </div>
+            </nav>
+            <div class="tab-content" id="pills-tabContent">
+                <!-- 用戶車籍 -->
+                <div class="tab-pane fade show active" id="pills-member" role="tabpanel"
+                    aria-labelledby="pills-member-tab">
+                    <div class="content mt-2 mx-2">
+                        <div class="row d-flex justify-content-around">
+                            <form class="d-flex mb-2 col-md-8">
+                                <input class="form-control me-1" autofocus type="search"
+                                    placeholder="請輸入車號 (如: ABC-123 )、公司行號或姓名查詢" aria-label="Search">
+                                <a href="#"><img src="./images/search icon.png" alt="" class="search"></a>
+                            </form>
+                            <button type="button" class="btn btnMain mb-3 col-md-2" @click="openMemberModal('create')"
+                                data-bs-target="#memberModal">
+                                新增
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center">公司行號</th>
+                                        <th scope="col text-center" class="text-center">姓名</th>
+                                        <th scope="col text-center" class="text-center">合約編號</th>
+                                        <th scope="col text-center" class="text-center">車號</th>
+                                        <th scope="col text-center" class="text-center">車種</th>
+                                        <th scope="col text-center" class="text-center">允許</th>
+                                        <th scope="col text-center" class="text-center">空車重量</th>
+                                        <th scope="col text-center" class="text-center">有效期限</th>
+                                        <th scope="col text-center" class="text-center">連絡電話</th>
+                                        <th scope="col text-center" class="text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(member, userId) in members" :key="member.userId">
+                                        <td>{{member.userId}}</td>
+                                        <td class="col text-center">{{ member.company_name}}</td>
+                                        <td class="col text-center">{{ member.user_name }}</td>
+                                        <td class="col text-center">{{ member.contract }}</td>
+                                        <td class="col text-center">{{ member.plate }}</td>
+                                        <td class="col text-center">{{ member.type }}</td>
+                                        <td class="col text-center text-success" v-if="member.permit === '1'">允許</td>
+                                        <td class="col text-center text-danger" v-else>不允許</td>
+                                        <td class="col text-center">{{ member.empty_weight }}</td>
+                                        <td class="col text-center">{{ member.date_end }}</td>
+                                        <td class="col text-center">{{ member.phone }}</td>
+                                        <td class="col text-center">
+                                            <button type="button" class="btn btnMain me-1"
+                                                @click="openMemberModal('edit', member)">修改</button>
+                                            <button type="button" class="btn btn-outline-danger"
+                                                data-bs-toggle="#delMemberModal" data-bs-target="#delMemberModal"
+                                                @click="openDelMemberModal(member)">刪除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- memberModal 新增修改用戶車籍-->
+                        <div id="memberModal" ref="memberModal" class="modal fade" tabindex="-1"
+                            aria-labelledby="memberModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content border-0">
+                                    <div class="modal-header contentTableTitle">
+                                        <h5 id="memberModalLabel" class="modal-title">
+                                            <span v-if="isNewMember">新增用戶車籍資料</span>
+                                            <span v-else>編輯用戶車籍資料</span>
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" v-if="isNewMember">
+                                        <ul>
+                                            <li>
+                                                <label for="company_name" class="form-label">公司行號<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="company_name" type="text" required placeholder="請輸入完整的公司行號"
+                                                    v-model="tempMember.company_name">
+                                            </li>
+                                            <li>
+                                                <label for="user_name" class="form-label">姓名<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="user_name" type="text" required placeholder="請輸入用戶姓名"
+                                                    v-model="tempMember.user_name">
+                                            </li>
+                                            <li>
+                                                <label for="contract" class="form-label">合約編號<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="contract" type="text" required placeholder="請輸入合約編號"
+                                                    v-model="tempMember.contract">
+                                            </li>
+                                            <li>
+                                                <label for="plate" class="form-label">車號<span
+                                                        class="text-danger">*</span></label>
+                                                <input id="plate" type="text" required placeholder="請輸入車號 (包含 - )"
+                                                    v-model="tempMember.plate">
+                                            </li>
+                                            <li>
+                                                <label for="type" class="form-label">車種<span
+                                                        class="text-danger">*</span> </label>
+                                                <select id="type" class="form-select"
+                                                    aria-label="Default select example" v-model="tempMember.type">
+                                                    <option selected>請選擇車輛種類</option>
+                                                    <option value="月租車">月租車</option>
+                                                    <option value="拍賣車">拍賣車</option>
+                                                    <option value="採購車">採購車</option>
+                                                </select>
+                                            </li>
+                                            <li>
+                                                <label for="permit" class="form-label">允許<span
+                                                        class="text-danger">*</span> </label>
+                                                <div class="form-check">
+                                                    <input id="permit" class="form-check-input" type="checkbox"
+                                                        :true-value="1" false-value="0" v-model="tempMember.permit">
+                                                    <label class="form-check-label" for="permit">
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label for="empty_weight" class="form-label">空車重量 (公斤)<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="number" required placeholder="請輸入空車重量"
+                                                    v-model="tempMember.empty_weight">
+                                            </li>
+                                            <li>
+                                                <label for="date_end" class="form-label">有效期限<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="date" required placeholder="請選擇有效日期"
+                                                    v-model="tempMember.date_end">
+                                            </li>
+                                            <li>
+                                                <label for="phone" class="form-label">連絡電話<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="text" required placeholder="請輸入連絡電話 (如: 0912-123456)"
+                                                    v-model="tempMember.phone">
+                                            </li>
+                                            <li>
+                                                <label for="personnelcode" class="form-label">建立人員<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="text" required placeholder="請輸入員工代號"
+                                                    v-model="tempMember.personnelcode">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-body" v-else>
+                                        <ul>
+                                            <li>
+                                                <label for="company_name" class="form-label">公司行號<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="company_name" type="text" required placeholder="請輸入完整的公司行號"
+                                                    v-model="tempMember.company_name" disabled>
+                                            </li>
+                                            <li>
+                                                <label for="user_name" class="form-label">姓名<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="user_name" type="text" required placeholder="請輸入用戶姓名"
+                                                    v-model="tempMember.user_name">
+                                            </li>
+                                            <li>
+                                                <label for="contract" class="form-label">合約編號<span
+                                                        class="text-danger">*</span> </label>
+                                                <input id="contract" type="text" required placeholder="請輸入合約編號"
+                                                    v-model="tempMember.contract" disabled>
+                                            </li>
+                                            <li>
+                                                <label for="plate" class="form-label">車號<span
+                                                        class="text-danger">*</span></label>
+                                                <input id="plate" type="text" required placeholder="請輸入車號 (包含 - )"
+                                                    v-model="tempMember.plate">
+                                            </li>
+                                            <li>
+                                                <label for="type" class="form-label">車種<span
+                                                        class="text-danger">*</span> </label>
+                                                <select id="type" class="form-select"
+                                                    aria-label="Default select example" v-model="tempMember.type">
+                                                    <option selected>請選擇車輛種類</option>
+                                                    <option value="1">月租車</option>
+                                                    <option value="2">拍賣車</option>
+                                                    <option value="3">採購車</option>
+                                                </select>
+                                            </li>
+                                            <li>
+                                                <label for="permit" class="form-label">允許<span
+                                                        class="text-danger">*</span> </label>
+                                                <div class="form-check">
+                                                    <input id="permit" class="form-check-input" type="checkbox"
+                                                        :true-value="1" false-value="0" v-model="tempMember.permit">
+                                                    <label class="form-check-label" for="permit">
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label for="empty_weight" class="form-label">空車重量 (公斤)<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="number" required placeholder="請輸入空車重量"
+                                                    v-model="tempMember.empty_weight">
+                                            </li>
+                                            <li>
+                                                <label for="date_end" class="form-label">有效期限<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="date" required placeholder="請選擇有效日期"
+                                                    v-model="tempMember.date_end">
+                                            </li>
+                                            <li>
+                                                <label for="phone" class="form-label">連絡電話<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="text" required placeholder="請輸入連絡電話 (如: 0912-123456)"
+                                                    v-model="tempMember.phone">
+                                            </li>
+                                            <li>
+                                                <label for="personnelcode" class="form-label">建立人員<span
+                                                        class="text-danger">*</span> </label>
+                                                <input type="text" required placeholder="請輸入員工代號"
+                                                    v-model="tempMember.personnelcode">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                            取消
+                                        </button>
+                                        <button type="button" class="btn btnMain" @click="updateMember">
+                                            確認
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- delMemberModal 刪除用戶車籍-->
+                        <div class="modal fade" id="delMemberModal" tabindex="-1" aria-labelledby="delMemberModal"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color: #FFC7C2;">
+                                        <h5 class="modal-title" id="delMemberModal">刪除用戶車籍資料</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>請確認是否刪除此資料</p>
+                                        <p>姓名： {{ tempMember.user_name }}</p>
+                                        <p>車號：{{ tempMember.plate }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            @click="deleteMember(tempMember)">確定刪除</button>
+                                        <button type="button" class="btn btn-outline-danger"
+                                            data-bs-dismiss="modal">取消</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- 歷史查詢 -->
+                <div class="tab-pane fade" id="pills-history" role="tabpanel" aria-labelledby="pills-history-tab">
+                    history
+                </div>
+                <!-- 使用者管理 -->
+                <div class="tab-pane fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">使用者管理</div>
+                <!-- <div class="tab-pane fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
+                <div class="text-end mt-4">
+                    <button class="btn btnMain text-white me-3" @click="openModal('create')">
+                        新增使用者資料
+                    </button>
+                </div>
+                <div class="row mx-2">
+                    <div>
+                        <table class="table table-hover mt-4">
+                            <thead>
+                                <tr>
+                                    <th width="120">
+                                        登入帳號
+                                    </th>
+                                    <th width="120">
+                                        姓名
+                                    </th>
+                                    <th width="120">
+                                        連絡電話
+                                    </th>
+                                    <th width="120">
+                                        部門
+                                    </th>
+                                    <th width="150">
+                                        修改時間
+                                    </th>
+                                    <th width="120">
+
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in users" :key="item.id">
+                                    <td width="120">
+                                        {{ item.account }}
+                                    </td>
+                                    <td width="120">
+                                        {{ item.name }}
+                                    </td>
+                                    <td width="120">
+                                        {{ item.phone }}
+                                    </td>
+                                    <td width="120">
+                                        {{ item.department }}
+                                    </td>
+                                    <td width="150">
+                                        {{ item.updateTime}}
+                                    </td>
+                                    <td width="150 gap-3">
+                                        <div class="btns gap-3">
+                                            <button type="button" class="btn btnMain text-white btn-sm"
+                                                @click="openModal('edit', user)">編輯</button>
+                                            <button type="button" class="btn btnDel btn-sm"
+                                                @click="openModal('delete', user)">刪除</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                Modal
+                <div id="userModal" ref="userModal" class="modal fade" tabindex="-1"
+                    aria-labelledby="userModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content border-0">
+                            <div class="modal-header userModalHeader">
+                                <h5 id="userModalLabel" class="modal-title">
+                                    <span v-if="isNewUser">新增使用者</span>
+                                    <span v-else>修改密碼</span>
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" v-if="isNewUser">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="account" class="form-label">登入帳號<strong class="text-danger">
+                                                    *</strong></label>
+                                            <input id="account" type="text" class="form-control"
+                                                placeholder="請輸入登入帳號" v-model="tempUser.account">
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="name" class="form-label">姓名<strong class="text-danger">
+                                                        *</strong></label>
+                                                <input id="name" type="text" class="form-control"
+                                                    placeholder="請輸入姓名" v-model="tempUser.name">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="phone" class="form-label">連絡電話<strong
+                                                        class="text-danger"> *</strong></label>
+                                                <input id="phone" type="text" class="form-control"
+                                                    placeholder="請輸入連絡電話" v-model="tempUser.phone">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="department" class="form-label">部門</label>
+                                                <input id="department" type="text" class="form-control"
+                                                    placeholder="請輸入部門" v-model="tempUser.department">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body" v-else>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="account" class="form-label">登入帳號：</label>
+                                            <input id="account" type="text" class="form-control"
+                                                placeholder="mitwit" v-model="tempUser.account" disabled>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="name" class="form-label">原密碼<strong class="text-danger">
+                                                        *</strong></label>
+                                                <input id="name" type="text" class="form-control"
+                                                    placeholder="請輸入原密碼">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="phone" class="form-label">新密碼<strong
+                                                        class="text-danger"> *</strong></label>
+                                                <input id="phone" type="password" class="form-control"
+                                                    placeholder="請輸入新密碼">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb-3 col-md-8">
+                                                <label for="department" class="form-label">新密碼確認<strong
+                                                        class="text-danger"> *</strong>
+                                                </label>
+                                                <input id="department" type="password" class="form-control"
+                                                    placeholder="請再次輸入新密碼">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    取消
+                                </button>
+                                <button type="button" class="btn btnMain" @click="updateUserData">
+                                    確認
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="delUserModal" ref="delUserModal" class="modal fade" tabindex="-1"
+                    aria-labelledby="delUserModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content border-0">
+                            <div class="modal-header deleteModalHeader">
+                                <h5 id="delUserModalLabel" class="modal-title">
+                                    <span>刪除使用者</span>
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <p class="mb-2">請確認是否刪除此使用者？</p>
+                                <p class="mb-2">登入帳號：<strong>{{ tempUser.account }}mitwit</strong></p>
+                                <p>姓名：<strong>{{ tempUser.name }}人員1</strong></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    取消
+                                </button>
+                                <button type="button" class="btn btnDel" @click="deleteuserData">
+                                    確認刪除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+                <footer class="text-center p-3 text-white">
+                    COPYRIGHT &copy; 2023 MITWIT INC. ALL RIGHTS RESERVED.
+                </footer>
+            </div>
+
+        </div>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+        integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+        crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+        integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+        integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+        crossorigin="anonymous"></script>
+    <script src="./js/all.js" type="module"></script>
+</body>
+
+</html>

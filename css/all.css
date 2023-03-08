@@ -1,0 +1,225 @@
+@charset "UTF-8";
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+nav {
+  background: #14AE5C;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #FFCD29;
+  background: rgba(0, 0, 0, 0);
+}
+
+.btnMain {
+  background: #14AE5C;
+}
+.btnMain:hover {
+  background: #11964f;
+}
+
+.btnDel {
+  margin-left: 5px;
+  background: #FFC7C2;
+}
+.btnDel:hover {
+  background: #f8b3ac;
+}
+
+nav ul li img {
+  border-radius: 50%;
+}
+
+footer {
+  background: #14AE5C;
+}
+
+.contentTableTitle {
+  background: #AFF4C6;
+}
+
+/* 新增用戶車籍 modal 樣式 */
+.carModalHeader {
+  background: #AFF4C6;
+}
+
+.deleteModalHeader {
+  background: #FFC7C2;
+}
+
+.modal-body ul li {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin-bottom: 15px;
+}
+
+#deleteModal .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #E6E6E6;
+}
+
+#deleteModal .modal-body p {
+  margin-bottom: 10px;
+}
+
+#deleteModal .modal-footer {
+  background: #E6E6E6;
+}
+
+.btnMain {
+  background: #14AE5C;
+}
+
+.btnMain:hover {
+  background: #0f924c;
+  color: #FFFFFF;
+}
+
+.btnDel {
+  margin-left: 5px;
+  background: #FFC7C2;
+}
+
+.btnDel:hover {
+  background: #f8b3ac;
+}
+
+.search {
+  width: 30px;
+  background: #000;
+}/*# sourceMappingURL=all.css.map */
