@@ -1,6 +1,6 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-const API = 'https://f111-114-32-150-22.ap.ngrok.io'
+const API = 'https://64a7-114-32-150-22.ap.ngrok.io'
 const loginApi = `${API}/users/login`;
 
 createApp({
