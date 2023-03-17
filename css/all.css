@@ -138,7 +138,8 @@ nav {
   background: #14AE5C;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
   color: #FFCD29;
   background: rgba(0, 0, 0, 0);
 }
@@ -222,4 +223,50 @@ footer {
 .search {
   width: 30px;
   background: #000;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 30px;
+}
+
+.updatePassword {
+  padding: 60px 0;
+}
+
+.updatePassword-form {
+  padding: 0 15px;
+}
+
+.updatePassword-formGroup {
+  max-width: 365px;
+  margin: 0 auto 15px;
+}
+
+.updatePassword-label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.updatePassword-input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #CED4DA;
+  border-radius: 5px;
+  text-indent: 1rem;
+  margin-right: 10px;
+}
+
+.updatePassword-inputWrap {
+  position: relative;
+}
+
+.updatePassword-message {
+  position: absolute;
+  white-space: nowrap;
+  left: 103%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #C72424;
 }/*# sourceMappingURL=all.css.map */

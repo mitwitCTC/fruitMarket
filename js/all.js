@@ -1,6 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-
-const API = 'https://af97-114-32-150-22.ap.ngrok.io';
+const API = 'https://b416-114-32-150-22.ap.ngrok.io';
 
 // 用戶車籍
 const getMembersApi = `${API}/member/memberInfo`;
@@ -15,11 +14,13 @@ let delUserModal = null;
 createApp({
     data() {
         return {
+            // loginCheck
+            loginCheckData: {
+                id: '',
+                account: '',
+                token: '',
+            },
             today: new Date().toLocaleString(),
-            // loginData: {
-            //     account: '',
-            //     token: ''
-            // },
             // 用戶車籍
             members: [],
             tempMember: {},
@@ -29,24 +30,94 @@ createApp({
             // 使用者
             users: [],
             tempUser: {},
-            isNewUser: false //用來確認是新增或編輯使用者
+            updateUserCheckData: {
+                account: '',
+                password: '',
+            },
+
+            isNewUser: false, //用來確認是新增或編輯使用者
+
+            // 紀錄查詢
+            records: [
+                {
+                    "name": "人員1",
+                    "plate": "ABC-0001",
+                    "type": "採購車",
+                    "enter_time": "2023-03-13 12:12:12",
+                    "enter_weight": 8500,
+                    "depart_time": "2023-09-13 15:52:13",
+                    "depart_weight": 9500,
+                },
+                {
+                    "name": "人員2",
+                    "plate": "ABC-0002",
+                    "type": "採購車",
+                    "enter_time": "2023-03-13 12:12:12",
+                    "enter_weight": 8500,
+                    "depart_time": "2023-09-13 15:52:13",
+                    "depart_weight": 9500,
+                },
+                {
+                    "name": "人員3",
+                    "plate": "ABC-0003",
+                    "type": "採購車",
+                    "enter_time": "2023-03-13 12:12:12",
+                    "enter_weight": 8500,
+                    "depart_time": "2023-09-13 15:52:13",
+                    "depart_weight": 9500,
+                }
+            ],
+
         }
     },
     methods: {
         // 確認登入
-        // loginCheck(account, userToken) {
-        //     const loginCheckApi = `${API}/user/loginCheck`;
-        //     axios
-        //         .post(`${loginCheckApi}`)
-        //         .then((response) => {
-        //             console.log(response);
-        //             this.getMembers();
-        //         })
-        //         .catch((error) => {
-        //             alert(error);
-        //             // window.location = `login.html`;
-        //         })
-        // },
+        loginCheck(loginCheckData) {
+            // 讀取 Cookie 的函數
+            function getCookie(name) {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(`${name}=`)) {
+                        return cookie.substring(name.length + 1);
+                    }
+                }
+                return null;
+            }
+
+            // 判斷哪一個使用者登入了
+            const username = getCookie('userToken');
+            if (username) {
+                // console.log(username.split(':'));
+                this.loginCheckData.id = username.split(':')[0];
+                this.loginCheckData.account = username.split(':')[1];
+                this.loginCheckData.token = username.split(':')[2];
+                // console.log(this.loginCheckData);
+                // console.log(`登入帳號為：`,this.loginCheckData.account);
+                // console.log(`token為：`,this.loginCheckData.token);
+            }
+
+            const loginCheckApi = `${API}/users/loginCheck`;
+            axios
+                .post(loginCheckApi, { target: this.loginCheckData })
+                .then((response) => {
+                    // console.log(this.loginCheckData);
+                    // console.log(response);
+                    if (this.loginCheckData.token != '') {
+                        this.updateUserCheckData.account = this.loginCheckData.account;
+                        this.getMembers();
+                        this.getUsers();
+                    } else {
+                        alert("尚未登入，請重新登入");
+                        window.location = `login.html`;
+                    }
+
+                })
+                .catch((error) => {
+                    alert(error);
+                    window.location = `login.html`;
+                })
+        },
 
         // logout
         loginOut() {
@@ -102,7 +173,8 @@ createApp({
             }
             axios
             [method](updateMemberApi, { target: this.tempMember })
-                .then(() => {
+                .then((response) => {
+                    alert(response.data.message); //若車牌已存在，則跳出警告，無法新增
                     this.getMembers(); //新增後重新取得用戶車籍列表
                     memberModal.hide();
                 })
@@ -118,7 +190,6 @@ createApp({
                 .then(() => {
                     this.getMembers(); //刪除後重新取得用戶車籍列表
                     delMemberModal.hide();
-
                 })
                 .catch((error) => {
                     alert(error);
@@ -178,28 +249,88 @@ createApp({
             if (!this.isNewUser) {
                 updateUserApi = `${API}/users/updateUser/${this.tempUser.id}`;
                 method = 'put';
-                if (this.tempUser.newPassword !== this.tempUser.newPasswordCheck) {
-                    alert("新密碼輸入不一致");
-                    return;
-                } else {
-                    this.tempUser.password = this.tempUser.newPassword;
-                }
                 // console.log(this.tempUser);
             };
             axios
             [method](updateUserApi, { target: this.tempUser })
                 .then((response) => {
                     if (method === 'put') {
-                        alert("修改成功～請重新登入");
-                        document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                        window.location = `login.html`;
+                        alert(response.data.message);
+                        userModal.hide();
+                    } else if (method === 'post') {
+                        alert(response.data.message);
+                        userModal.hide();
                     };
-                    alert(response.data.message);
-                    userModal.hide();
                     this.getUsers(); //新增後重新取得用戶車籍列表
                 })
                 .catch((error) => {
                     alert(error)
+                })
+        },
+        // 確認修改使用者原密碼
+        updatePasswordCheck(updateUserCheckData) {
+            const checkUserApi = `${API}/users/checkUser`;
+            axios
+                .post(checkUserApi, { target: this.updateUserCheckData })
+                .then((response) => {
+                    this.updateUserCheckData.account = this.loginCheckData.account;
+                    // console.log(this.updateUserCheckData.account, this.updateUserCheckData.password);
+                    if (response.data.message === "密碼錯誤") {
+                        alert("原密碼輸入錯誤，請確認原密碼");
+                        return;
+                    } else {
+                        this.updatePassword();
+                    }
+                })
+                .catch((response) => {
+                    alert(response.message)
+                })
+        },
+        // 
+        // 修改使用者密碼
+        updatePassword() {
+            const updatePasswordApi = `${API}/users/updatePassword/${this.loginCheckData.id}`
+            // console.log(updatePasswordApi);
+            if (this.tempUser.newPassword === '' || this.tempUser.newPasswordCheck === '') {
+                alert('密碼不得為空');
+            } else if (this.tempUser.newPassword !== this.tempUser.newPasswordCheck) {
+                alert('新密碼輸入不一致');
+            } else {
+                // console.log(this.tempUser.newPassword);
+                this.updateUserCheckData.password = this.tempUser.newPassword;
+                // console.log("updateUserCheckData: ", this.updateUserCheckData);
+                axios
+                    .put(updatePasswordApi, { target: this.updateUserCheckData })
+                    .then((response) => {
+                        alert("修改成功～請重新登入");
+                        // console.log(response);
+                        // console.log(this.updateUserCheckData);
+                        document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                        window.location = `login.html`;
+                        this.getUsers(); //新增後重新取得用戶車籍列表
+                    })
+                    .catch((error) => {
+                        alert(error)
+                    })
+            }
+        },
+        // 驗證修改使用者密碼
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        checkUpdatePasswordForm() {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
                 })
         },
         // 刪除使用者
@@ -208,22 +339,20 @@ createApp({
             axios
                 .patch(deleteUserApi, { target: this.tempUser.id })
                 .then(() => {
+                    document.cookie = "mitwitToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    window.location = `login.html`;
                     this.getUsers(); //刪除後重新取得使用者資料列表
                     delUserModal.hide();
-                    document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                    window.location = `login.html`;
                 })
                 .catch((error) => {
                     alert(error);
                 })
         }
-        // 使用者
     },
+
     mounted() {
-        // axios.default.headers.common['Authorization'] = userToken;
-        // this.loginCheck();
-        this.getMembers();
-        this.getUsers();
+        // axios.default.headers.common['Authorization'] = mitwitToken;
+        this.loginCheck();
         // 初始化 bootstrap modal
         memberModal = new bootstrap.Modal('#memberModal');
         delMemberModal = new bootstrap.Modal('#delMemberModal');

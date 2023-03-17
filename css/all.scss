@@ -137,13 +137,14 @@ table {
 }
 
 
-nav{
-    background: #14AE5C;
+nav {
+	background: #14AE5C;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    color: #FFCD29;
-    background: #00000000;
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+	color: #FFCD29;
+	background: #00000000;
 }
 
 .btnMain {
@@ -157,6 +158,7 @@ nav{
 .btnDel {
 	margin-left: 5px;
 	background: #FFC7C2;
+
 	&:hover {
 		background: #f8b3ac;
 	}
@@ -181,54 +183,106 @@ footer {
 
 .contentTableTitle {
 	background: #AFF4C6;
-  }
-  
-  /* 新增用戶車籍 modal 樣式 */
-  .carModalHeader {
+}
+
+/* 新增用戶車籍 modal 樣式 */
+.carModalHeader {
 	background: #AFF4C6;
-  }
-  
-  .deleteModalHeader {
+}
+
+.deleteModalHeader {
 	background: #FFC7C2;
-  }
-  
-  .modal-body ul li {
+}
+
+.modal-body ul li {
 	display: flex;
 	flex-direction: column;
 	list-style: none;
 	margin-bottom: 15px;
-  }
-  
-  #deleteModal .modal-body {
+}
+
+#deleteModal .modal-body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	background: #E6E6E6;
-  }
-  #deleteModal .modal-body p {
+}
+
+#deleteModal .modal-body p {
 	margin-bottom: 10px;
-  }
-  #deleteModal .modal-footer {
+}
+
+#deleteModal .modal-footer {
 	background: #E6E6E6;
-  }
-  
-  .btnMain {
+}
+
+.btnMain {
 	background: #14AE5C;
-  }
-  .btnMain:hover {
+}
+
+.btnMain:hover {
 	background: #0f924c;
 	color: #FFFFFF;
-  }
-  
-  .btnDel {
+}
+
+.btnDel {
 	margin-left: 5px;
 	background: #FFC7C2;
-  }
-  .btnDel:hover {
-	background: #f8b3ac;
-  }
+}
 
-  .search {
-    width: 30px;
-    background: #000;
-  } 
+.btnDel:hover {
+	background: #f8b3ac;
+}
+
+.search {
+	width: 30px;
+	background: #000;
+}
+
+//   修改密碼
+.section-title {
+	text-align: center;
+	font-size: 1.75rem;
+	margin-bottom: 30px;
+}
+
+.updatePassword {
+	padding: 60px 0;
+}
+
+.updatePassword-form {
+	padding: 0 15px;
+}
+
+.updatePassword-formGroup {
+	max-width: 365px;
+	margin: 0 auto 15px;
+}
+
+.updatePassword-label {
+	display: block;
+	margin-bottom: 6px;
+}
+
+.updatePassword-input {
+	width: 100%;
+	min-height: 38px;
+	border: 1px solid #CED4DA;
+	border-radius: 5px;
+	text-indent: 1rem;
+	margin-right: 10px;
+}
+
+.updatePassword-inputWrap {
+	position: relative;
+}
+
+.updatePassword-message {
+	position: absolute;
+	white-space: nowrap;
+	left: 103%;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+	color: #C72424;
+}
