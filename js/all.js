@@ -339,8 +339,6 @@ createApp({
             axios
                 .patch(deleteUserApi, { target: this.tempUser.id })
                 .then(() => {
-                    document.cookie = "mitwitToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                    window.location = `login.html`;
                     this.getUsers(); //刪除後重新取得使用者資料列表
                     delUserModal.hide();
                 })
