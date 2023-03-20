@@ -320,7 +320,10 @@ const app = Vue.createApp({
         updatePassword() {
             const updatePasswordApi = `${API}/users/updatePassword/${this.loginCheckData.id}`
             // console.log(updatePasswordApi);
-            if (this.tempUser.newPassword === '' || this.tempUser.newPasswordCheck === '') {
+            if(this.updateUserCheckData.password === this.tempUser.newPassword){
+                alert("新密碼不得與原密碼相同！")
+            }
+            else if (this.tempUser.newPassword === '' || this.tempUser.newPasswordCheck === '') {
                 alert('密碼不得為空');
             } else if (this.tempUser.newPassword !== this.tempUser.newPasswordCheck) {
                 alert('新密碼輸入不一致');
