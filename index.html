@@ -125,12 +125,8 @@
                                                 </label>
                                                 <v-field id="company_name" name="公司行號" type="text" class="form-control"
                                                     placeholder="請輸入完整的公司行號" rules="required"
-                                                    :class="{ 'is-invalid': errors['公司行號']}" v-if="isNewMember"
-                                                    v-model="tempMember.company_name">
-                                                </v-field>
-                                                <v-field id="company_name" name="公司行號" type="text" class="form-control"
-                                                    placeholder="請輸入完整的公司行號" rules="required"
-                                                    :class="{ 'is-invalid': errors['公司行號']}" v-else disabled
+                                                    :class="{ 'is-invalid': errors['公司行號']}" 
+                                                    :disabled="isNewMember ? false : true"
                                                     v-model="tempMember.company_name">
                                                 </v-field>
                                                 <error-message name="公司行號" class="invalid-feedback"></error-message>
@@ -154,12 +150,8 @@
                                                 </label>
                                                 <v-field id="contract" name="合約編號" type="text" class="form-control"
                                                     placeholder="請輸入合約編號" rules="required"
-                                                    :class="{ 'is-invalid': errors['合約編號']}" v-if="isNewMember"
-                                                    v-model="tempMember.contract">
-                                                </v-field>
-                                                <v-field id="contract" name="合約編號" type="text" class="form-control"
-                                                    placeholder="請輸入合約編號" rules="required"
-                                                    :class="{ 'is-invalid': errors['合約編號']}" v-else disabled
+                                                    :class="{ 'is-invalid': errors['合約編號']}"
+                                                    :disabled="isNewMember ? false : true"
                                                     v-model="tempMember.contract">
                                                 </v-field>
                                                 <error-message name="合約編號" class="invalid-feedback"></error-message>
@@ -441,12 +433,8 @@
                                             </label>
                                             <v-field id="account" name="登入帳號" type="text" class="form-control"
                                                 placeholder="請輸入登入帳號" rules="required"
-                                                :class="{ 'is-invalid': errors['登入帳號']}" v-if="isNewUser"
-                                                v-model="tempUser.account">
-                                            </v-field>
-                                            <v-field id="account" name="登入帳號" type="text" class="form-control"
-                                                placeholder="請輸入登入帳號" rules="required"
-                                                :class="{ 'is-invalid': errors['登入帳號']}" v-else disabled
+                                                :class="{ 'is-invalid': errors['登入帳號']}"
+                                                :disabled="isNewUser ? false : true" 
                                                 v-model="tempUser.account">
                                             </v-field>
                                             <error-message name="登入帳號" class="invalid-feedback"></error-message>
