@@ -77,7 +77,7 @@
                                         <th scope="col text-center" class="text-center">允許</th>
                                         <th scope="col text-center" class="text-center">空車重量</th>
                                         <th scope="col text-center" class="text-center">有效期限</th>
-                                        <th scope="col text-center" class="text-center">連絡電話</th>
+                                        <th scope="col text-center" class="text-center">聯絡電話</th>
                                         <th scope="col text-center" class="text-center"></th>
                                     </tr>
                                 </thead>
@@ -117,159 +117,145 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body" v-if="isNewMember">
-                                        <ul>
-                                            <li>
-                                                <label for="company_name" class="form-label">公司行號<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="company_name" type="text" required placeholder="請輸入完整的公司行號"
+                                    <div class="modal-body">
+                                        <v-form v-slot="{ errors }" @submit="updateMember">
+                                            <div class="mb-3">
+                                                <label for="company_name" class="form-label">公司行號
+                                                    <span class="text-danger">{{ isNewMember ? '*' : '' }}</span>
+                                                </label>
+                                                <v-field id="company_name" name="公司行號" type="text" class="form-control"
+                                                    placeholder="請輸入完整的公司行號" rules="required"
+                                                    :class="{ 'is-invalid': errors['公司行號']}" v-if="isNewMember"
                                                     v-model="tempMember.company_name">
-                                            </li>
-                                            <li>
-                                                <label for="user_name" class="form-label">姓名<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="user_name" type="text" required placeholder="請輸入用戶姓名"
+                                                </v-field>
+                                                <v-field id="company_name" name="公司行號" type="text" class="form-control"
+                                                    placeholder="請輸入完整的公司行號" rules="required"
+                                                    :class="{ 'is-invalid': errors['公司行號']}" v-else disabled
+                                                    v-model="tempMember.company_name">
+                                                </v-field>
+                                                <error-message name="公司行號" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="user_name" class="form-label">姓名
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="user_name" name="姓名" type="text" class="form-control"
+                                                    placeholder="請輸入姓名" rules="required"
+                                                    :class="{ 'is-invalid': errors['姓名']}"
                                                     v-model="tempMember.user_name">
-                                            </li>
-                                            <li>
-                                                <label for="contract" class="form-label">合約編號<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="contract" type="text" required placeholder="請輸入合約編號"
+                                                </v-field>
+                                                <error-message name="姓名" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="contract" class="form-label">合約編號
+                                                    <span class="text-danger">{{ isNewMember ? '*' : '' }}</span>
+                                                </label>
+                                                <v-field id="contract" name="合約編號" type="text" class="form-control"
+                                                    placeholder="請輸入合約編號" rules="required"
+                                                    :class="{ 'is-invalid': errors['合約編號']}" v-if="isNewMember"
                                                     v-model="tempMember.contract">
-                                            </li>
-                                            <li>
-                                                <label for="plate" class="form-label">車號<span
-                                                        class="text-danger">*</span></label>
-                                                <input id="plate" type="text" required placeholder="請輸入車號 (包含 - )"
-                                                    v-model="tempMember.plate">
-                                            </li>
-                                            <li>
-                                                <label for="type" class="form-label">車種<span
-                                                        class="text-danger">*</span> </label>
-                                                <select id="type" class="form-select"
-                                                    aria-label="Default select example" v-model="tempMember.type">
-                                                    <option selected disabled>請選擇車輛種類</option>
+                                                </v-field>
+                                                <v-field id="contract" name="合約編號" type="text" class="form-control"
+                                                    placeholder="請輸入合約編號" rules="required"
+                                                    :class="{ 'is-invalid': errors['合約編號']}" v-else disabled
+                                                    v-model="tempMember.contract">
+                                                </v-field>
+                                                <error-message name="合約編號" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="plate" class="form-label">車號
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="plate" name="車號" type="text" class="form-control"
+                                                    placeholder="請輸入車號" rules="required"
+                                                    :class="{ 'is-invalid': errors['車號']}" v-model="tempMember.plate">
+                                                </v-field>
+                                                <error-message name="車號" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="type" class="form-label">車種
+                                                    <span class="text-danger">*</span> </label>
+                                                <v-field id="type" name="車種" class="form-select"
+                                                    aria-label="Default select example"
+                                                    :class="{ 'is-invalid': errors['車種'] }" rules="required" as="select"
+                                                    v-model="tempMember.type">
+                                                    <option value="" disabled>請選擇車輛種類</option>
                                                     <option value="月租車">月租車</option>
                                                     <option value="拍賣車">拍賣車</option>
                                                     <option value="採購車">採購車</option>
-                                                </select>
-                                            </li>
-                                            <li>
-                                                <label for="permit" class="form-label">允許<span
-                                                        class="text-danger">*</span> </label>
+                                                </v-field>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="permit" class="form-label">允許</label>
                                                 <div class="form-check">
                                                     <input id="permit" class="form-check-input" type="checkbox"
                                                         :true-value="1" false-value="0" v-model="tempMember.permit">
                                                     <label class="form-check-label" for="permit">
                                                     </label>
                                                 </div>
-                                            </li>
-                                            <li>
-                                                <label for="empty_weight" class="form-label">空車重量 (公斤)<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="number" required placeholder="請輸入空車重量"
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="empty_weight" class="form-label">空車重量
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="empty_weight" name="空車重量" type="number"
+                                                    class="form-control" placeholder="請輸入空車重量" rules="required"
+                                                    :class="{ 'is-invalid': errors['空車重量']}"
                                                     v-model="tempMember.empty_weight">
-                                            </li>
-                                            <li>
-                                                <label for="date_end" class="form-label">有效期限<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="date" required placeholder="請選擇有效日期"
+                                                </v-field>
+                                                <error-message name="空車重量" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="date_end" class="form-label">有效期限
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="date_end" name="有效期限" type="date" class="form-control"
+                                                    placeholder="請輸入有效期限" rules="required"
+                                                    :class="{ 'is-invalid': errors['有效期限']}"
                                                     v-model="tempMember.date_end">
-                                            </li>
-                                            <li>
-                                                <label for="phone" class="form-label">連絡電話<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="text" required placeholder="請輸入連絡電話 (如: 0909123456)"
-                                                    v-model="tempMember.phone">
-                                            </li>
-                                            <li>
-                                                <label for="personnelcode" class="form-label">建立人員<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="text" required placeholder="請輸入員工代號"
+                                                </v-field>
+                                                <error-message name="有效期限" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="phone" class="form-label">聯絡電話
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="phone" name="聯絡電話" type="text" class="form-control"
+                                                    placeholder="請輸入聯絡電話，如0909123456" :rules="isPhone"
+                                                    :class="{ 'is-invalid': errors['聯絡電話']}" v-model="tempMember.phone">
+                                                </v-field>
+                                                <error-message name="聯絡電話" class="invalid-feedback"></error-message>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="personnelcode" class="form-label">建立人員
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="personnelcode" name="員工代號" type="text" class="form-control"
+                                                    placeholder="請輸入員工代號" rules="required"
+                                                    :class="{ 'is-invalid': errors['員工代號']}"
                                                     v-model="tempMember.personnelcode">
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-body" v-else>
-                                        <ul>
-                                            <li>
-                                                <label for="company_name" class="form-label">公司行號<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="company_name" type="text" required placeholder="請輸入完整的公司行號"
-                                                    v-model="tempMember.company_name" disabled>
-                                            </li>
-                                            <li>
-                                                <label for="user_name" class="form-label">姓名<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="user_name" type="text" required placeholder="請輸入用戶姓名"
-                                                    v-model="tempMember.user_name">
-                                            </li>
-                                            <li>
-                                                <label for="contract" class="form-label">合約編號<span
-                                                        class="text-danger">*</span> </label>
-                                                <input id="contract" type="text" required placeholder="請輸入合約編號"
-                                                    v-model="tempMember.contract" disabled>
-                                            </li>
-                                            <li>
-                                                <label for="plate" class="form-label">車號<span
-                                                        class="text-danger">*</span></label>
-                                                <input id="plate" type="text" required placeholder="請輸入車號 (包含 - )"
-                                                    v-model="tempMember.plate">
-                                            </li>
-                                            <li>
-                                                <label for="type" class="form-label">車種<span
-                                                        class="text-danger">*</span> </label>
-                                                <select id="type" class="form-select"
-                                                    aria-label="Default select example" v-model="tempMember.type">
-                                                    <option selected disabled>請選擇車輛種類</option>
-                                                    <option value="月租車">月租車</option>
-                                                    <option value="月租車">拍賣車</option>
-                                                    <option value="月租車">採購車</option>
-                                                </select>
-                                            </li>
-                                            <li>
-                                                <label for="permit" class="form-label">允許<span
-                                                        class="text-danger">*</span> </label>
-                                                <div class="form-check">
-                                                    <input id="permit" class="form-check-input" type="checkbox"
-                                                        :true-value="1" false-value="0" v-model="tempMember.permit">
-                                                    <label class="form-check-label" for="permit">
-                                                    </label>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <label for="empty_weight" class="form-label">空車重量 (公斤)<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="number" required placeholder="請輸入空車重量"
-                                                    v-model="tempMember.empty_weight">
-                                            </li>
-                                            <li>
-                                                <label for="date_end" class="form-label">有效期限<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="date" required placeholder="請選擇有效日期"
-                                                    v-model="tempMember.date_end">
-                                            </li>
-                                            <li>
-                                                <label for="phone" class="form-label">連絡電話<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="text" required placeholder="請輸入連絡電話 (如: 0912123456)"
-                                                    v-model="tempMember.phone">
-                                            </li>
-                                            <li>
-                                                <label for="personnelcode" class="form-label">建立人員<span
-                                                        class="text-danger">*</span> </label>
-                                                <input type="text" required placeholder="請輸入員工代號"
-                                                    v-model="tempMember.personnelcode">
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                            取消
-                                        </button>
-                                        <button type="button" class="btn btnMain" @click="updateMember">
-                                            確認
-                                        </button>
+                                                </v-field>
+                                                <error-message name="員工代號" class="invalid-feedback"></error-message>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    取消
+                                                </button>
+                                                <button type="submit" class="btn btnMain">
+                                                    確認
+                                                </button>
+                                            </div>
+                                        </v-form>
                                     </div>
                                 </div>
                             </div>
@@ -312,8 +298,8 @@
                                 placeholder="請輸入車號 (如: ABC-123 )或入場日期查詢" aria-label="Search" v-model="searchRecord">
                             <a href="#"><img src="./images/search icon.png" alt="" class="search"
                                 @click="searchRecord(searchRecord)"></a>
-                        </form> -->
-                        <!-- <table class="table table-hover mt-4">
+                        </form>
+                        <table class="table table-hover mt-4">
                             <thead>
                                 <tr scope="col" class="text-center contentTableTitle">
                                     <th scope="col" class="text-center">
@@ -392,7 +378,7 @@
                                             姓名
                                         </th>
                                         <th scope="col" class="text-center">
-                                            連絡電話
+                                            聯絡電話
                                         </th>
                                         <th scope="col" class="text-center">
                                             部門
@@ -447,8 +433,71 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body" v-if="isNewUser">
-                                    <div class="row">
+                                <div class="modal-body">
+                                    <v-form v-slot="{errors}" @submit="updateUser">
+                                        <div class="mb-3">
+                                            <label for="account" class="form-label">登入帳號
+                                                <span class="text-danger">{{ isNewUser ? '*' : '' }}</span>
+                                            </label>
+                                            <v-field id="account" name="登入帳號" type="text" class="form-control"
+                                                placeholder="請輸入登入帳號" rules="required"
+                                                :class="{ 'is-invalid': errors['登入帳號']}" v-if="isNewUser"
+                                                v-model="tempUser.account">
+                                            </v-field>
+                                            <v-field id="account" name="登入帳號" type="text" class="form-control"
+                                                placeholder="請輸入登入帳號" rules="required"
+                                                :class="{ 'is-invalid': errors['登入帳號']}" v-else disabled
+                                                v-model="tempUser.account">
+                                            </v-field>
+                                            <error-message name="登入帳號" class="invalid-feedback"></error-message>
+                                        </div>
+                                        <div class="mb-3" v-if="isNewUser">
+                                            <label for="password" class="form-label">登入密碼
+                                            </label>
+                                            <v-field id="password" name="登入密碼" type="password" class="form-control"
+                                                placeholder="請輸入密碼，若未輸入，預設為1234" v-model="tempUser.password">
+                                            </v-field>
+                                        </div>
+                                        <div class="mb-3" v-else></div>
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">姓名
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <v-field id="name" name="姓名" type="text" class="form-control"
+                                                placeholder="請輸入姓名" rules="required"
+                                                :class="{ 'is-invalid': errors['姓名']}" v-model="tempUser.name">
+                                            </v-field>
+                                            <error-message name="姓名" class="invalid-feedback"></error-message>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">聯絡電話
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <v-field id="userPhone" name="聯絡電話" type="text" class="form-control"
+                                                placeholder="請輸入聯絡電話，如0909123456" :rules="isPhone"
+                                                :class="{ 'is-invalid': errors['聯絡電話']}" v-model="tempUser.phone">
+                                            </v-field>
+                                            <error-message name="聯絡電話" class="invalid-feedback"></error-message>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="department" class="form-label">部門
+                                            </label>
+                                            <input id="department" name="部門" type="text" class="form-control"
+                                                placeholder="請輸入部門" v-model="tempUser.department">
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btnMain">
+                                                確認
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-dismiss="modal">
+                                                取消
+                                            </button>
+                                        </div>
+                                    </v-form>
+                                    <!-- <div class="row">
                                         <div class="col-md-8">
                                             <div class="mb-3">
                                                 <label for="account" class="form-label">登入帳號<strong class="text-danger">
@@ -478,9 +527,9 @@
                                     </div>
                                     <div class="row">
                                         <div class="mb-3 col-md-8">
-                                            <label for="phone" class="form-label">連絡電話<strong class="text-danger">
+                                            <label for="phone" class="form-label">聯絡電話<strong class="text-danger">
                                                     *</strong></label>
-                                            <input id="phone" type="text" class="form-control" placeholder="請輸入連絡電話"
+                                            <input id="phone" type="text" class="form-control" placeholder="請輸入聯絡電話"
                                                 v-model="tempUser.phone">
                                         </div>
                                     </div>
@@ -490,9 +539,9 @@
                                             <input id="department" type="text" class="form-control" placeholder="請輸入部門"
                                                 v-model="tempUser.department">
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
-                                <div class="modal-body" v-else>
+                                <!-- <div class="modal-body" v-else>
                                     <div class="row">
                                         <div class="col-md-8">
                                             <div class="mb-3">
@@ -512,9 +561,9 @@
                                     </div>
                                     <div class="row">
                                         <div class="mb-3 col-md-8">
-                                            <label for="phone" class="form-label">連絡電話<strong
+                                            <label for="phone" class="form-label">聯絡電話<strong
                                                     class="text-danger">*</strong></label>
-                                            <input id="phone" type="text" class="form-control" placeholder="請輸入連絡電話"
+                                            <input id="phone" type="text" class="form-control" placeholder="請輸入聯絡電話"
                                                 v-model="tempUser.phone">
                                         </div>
                                     </div>
@@ -525,19 +574,9 @@
                                                 v-model="tempUser.department">
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btnMain" v-if="isNewUser" @click="updateUser">
-                                        確認
-                                    </button>
-                                    <button type="button" class="btn btnMain" v-else @click="updateUser">
-                                        確認
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                        取消
-                                    </button>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -577,22 +616,27 @@
                             <form class="updatePassword-form">
                                 <div class="updatePassword-formGroup">
                                     <label for="account" class="updatePassword-label">帳號</label>
-                                    <input type="text" class="updatePassword-input" id="updateAccount" placeholder="{{this.loginCheckData.account}}" name="帳號" v-model="this.loginCheckData.account" disabled>
+                                    <input type="text" class="updatePassword-input" id="updateAccount"
+                                        placeholder="{{this.loginCheckData.account}}" name="帳號"
+                                        v-model="this.loginCheckData.account" disabled>
                                 </div>
 
                                 <div class="updatePassword-formGroup">
                                     <label for="validationDefault01" class="updatePassword-label">原密碼</label>
-                                    <input type="password" class="updatePassword-input" id="password" v-model="this.updateUserCheckData.password" required>
+                                    <input type="password" class="updatePassword-input" id="password"
+                                        v-model="this.updateUserCheckData.password" required>
                                 </div>
-                                
+
                                 <div class="updatePassword-formGroup">
                                     <label for="validationDefault02" class="updatePassword-label">新密碼</label>
-                                    <input type="password" class="updatePassword-input" id="newPassword" v-model="tempUser.newPassword" required>
+                                    <input type="password" class="updatePassword-input" id="newPassword"
+                                        v-model="tempUser.newPassword" required>
                                 </div>
 
                                 <div class="updatePassword-formGroup">
                                     <label for="validationDefault03" class="updatePassword-label">新密碼確認</label>
-                                    <input type="password" class="updatePassword-input" id="newPasswordCheck" v-model="tempUser.newPasswordCheck" required>
+                                    <input type="password" class="updatePassword-input" id="newPasswordCheck"
+                                        v-model="tempUser.newPasswordCheck" required>
                                 </div>
                                 <button type="submit" class="btn btnMain" style="margin: 0px 50vw; width: 100px;"
                                     @click.prevent="updatePasswordCheck">確認修改</button>
@@ -601,7 +645,8 @@
                         </section>
                     </div>
                 </div>
-                <footer class="text-center p-3 text-white">
+
+                <footer class="text-center p-3 text-white footer">
                     COPYRIGHT &copy; 2023 MITWIT INC. ALL RIGHTS RESERVED.
                 </footer>
             </div>
@@ -618,9 +663,9 @@
         integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
         crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@next"></script>
-    <script src="https://unpkg.com/vee-validate@next"></script>
-    <script src="https://unpkg.com/@vee-validate/i18n@4.1.0"></script>
-    <script src="https://unpkg.com/@vee-validate/rules"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.5.8/vee-validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.5.8/dist/vee-validate-rules.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.5.8/dist/vee-validate-i18n.min.js"></script>
     <script src="./js/all.js" type="module"></script>
 </body>
 

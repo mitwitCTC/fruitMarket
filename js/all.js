@@ -1,5 +1,16 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-const API = 'https://b416-114-32-150-22.ap.ngrok.io';
+const API = 'https://30ef-114-32-150-22.ap.ngrok.io';
+
+// 表單驗證 必填
+VeeValidate.defineRule('required', VeeValidateRules['required']);
+// 讀取外部的資源
+VeeValidateI18n.loadLocaleFromURL('./zh_TW.json');
+
+// Activate the locale
+VeeValidate.configure({
+    generateMessage: VeeValidateI18n.localize('zh_TW'),
+    validateOnInput: true, // 調整為：輸入文字時，就立即進行驗證
+});
 
 // 用戶車籍
 const getMembersApi = `${API}/member/memberInfo`;
@@ -11,9 +22,21 @@ const getUsersApi = `${API}/users/userInfo`;
 let userModal = null;
 let delUserModal = null;
 
-createApp({
+const app = Vue.createApp({
     data() {
         return {
+            // 表單驗證
+            validateMember: {
+                company_name: '',
+                user_name: '',
+                contract: '',
+                plate: '',
+                type: '',
+                empty_weight: '',
+                date_end: '',
+                phone: '',
+                personnelcode: ''
+            },
             // loginCheck
             loginCheckData: {
                 id: '',
@@ -38,35 +61,35 @@ createApp({
             isNewUser: false, //用來確認是新增或編輯使用者
 
             // 紀錄查詢
-            records: [
-                {
-                    "name": "人員1",
-                    "plate": "ABC-0001",
-                    "type": "採購車",
-                    "enter_time": "2023-03-13 12:12:12",
-                    "enter_weight": 8500,
-                    "depart_time": "2023-09-13 15:52:13",
-                    "depart_weight": 9500,
-                },
-                {
-                    "name": "人員2",
-                    "plate": "ABC-0002",
-                    "type": "採購車",
-                    "enter_time": "2023-03-13 12:12:12",
-                    "enter_weight": 8500,
-                    "depart_time": "2023-09-13 15:52:13",
-                    "depart_weight": 9500,
-                },
-                {
-                    "name": "人員3",
-                    "plate": "ABC-0003",
-                    "type": "採購車",
-                    "enter_time": "2023-03-13 12:12:12",
-                    "enter_weight": 8500,
-                    "depart_time": "2023-09-13 15:52:13",
-                    "depart_weight": 9500,
-                }
-            ],
+            // records: [
+            //     {
+            //         "name": "人員1",
+            //         "plate": "ABC-0001",
+            //         "type": "採購車",
+            //         "enter_time": "2023-03-13 12:12:12",
+            //         "enter_weight": 8500,
+            //         "depart_time": "2023-09-13 15:52:13",
+            //         "depart_weight": 9500,
+            //     },
+            //     {
+            //         "name": "人員2",
+            //         "plate": "ABC-0002",
+            //         "type": "採購車",
+            //         "enter_time": "2023-03-13 12:12:12",
+            //         "enter_weight": 8500,
+            //         "depart_time": "2023-09-13 15:52:13",
+            //         "depart_weight": 9500,
+            //     },
+            //     {
+            //         "name": "人員3",
+            //         "plate": "ABC-0003",
+            //         "type": "採購車",
+            //         "enter_time": "2023-03-13 12:12:12",
+            //         "enter_weight": 8500,
+            //         "depart_time": "2023-09-13 15:52:13",
+            //         "depart_weight": 9500,
+            //     }
+            // ],
 
         }
     },
@@ -133,6 +156,12 @@ createApp({
                 })
 
         },
+        // 驗證電話
+        isPhone(value) {
+            const phoneNumber = /^(09)[0-9]{8}$/
+            return phoneNumber.test(value) ? true : '請確認聯絡電話格式'
+        },
+
         // 取得用戶車籍資料 (members)
         getMembers() {
             axios
@@ -307,6 +336,7 @@ createApp({
                         // console.log(this.updateUserCheckData);
                         document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                         window.location = `login.html`;
+                        this.tempUser = {};
                         this.getUsers(); //新增後重新取得用戶車籍列表
                     })
                     .catch((error) => {
@@ -354,7 +384,16 @@ createApp({
         // 初始化 bootstrap modal
         memberModal = new bootstrap.Modal('#memberModal');
         delMemberModal = new bootstrap.Modal('#delMemberModal');
+
         userModal = new bootstrap.Modal('#userModal');
         delUserModal = new bootstrap.Modal('#delUserModal');
     }
-}).mount('#app');
+});
+
+
+
+app.component('VForm', VeeValidate.Form);
+app.component('VField', VeeValidate.Field);
+app.component('ErrorMessage', VeeValidate.ErrorMessage);
+
+app.mount('#app');
