@@ -33,5 +33,24 @@ createApp({
                     alert(error);
                 })
         }
+    },
+    mounted(){
+         // 讀取 Cookie 的函數
+         function getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(`${name}=`)) {
+                    return cookie.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
+
+        // 如果有 token ，則直接跳轉到 index 頁
+        const username = getCookie('userToken');
+        if (username) {
+            window.location = `index.html`;
+        }
     }
 }).mount('#app');
