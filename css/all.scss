@@ -235,8 +235,7 @@ footer {
 }
 
 .search {
-	width: 30px;
-	background: #000;
+	cursor: pointer;
 }
 
 //   修改密碼
@@ -285,4 +284,26 @@ footer {
 	-webkit-transform: translateY(-50%);
 	transform: translateY(-50%);
 	color: #C72424;
+}
+
+// 無搜尋結果
+.cantFind-Area {
+	display: none;
+	margin-top: 70px;
+	text-align: center;
+
+	h3 {
+		color: #14AE5C;
+		font-size: 2rem;
+		margin-bottom: 50px;
+		font-weight: bold;
+	}
+
+	img {
+		margin: 0 auto;
+	}
+}
+
+.block {
+	display: block;
 }

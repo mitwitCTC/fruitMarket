@@ -221,8 +221,7 @@ footer {
 }
 
 .search {
-  width: 30px;
-  background: #000;
+  cursor: pointer;
 }
 
 .section-title {
@@ -269,4 +268,23 @@ footer {
   top: 50%;
   transform: translateY(-50%);
   color: #C72424;
+}
+
+.cantFind-Area {
+  display: none;
+  margin-top: 70px;
+  text-align: center;
+}
+.cantFind-Area h3 {
+  color: #14AE5C;
+  font-size: 2rem;
+  margin-bottom: 50px;
+  font-weight: bold;
+}
+.cantFind-Area img {
+  margin: 0 auto;
+}
+
+.block {
+  display: block;
 }/*# sourceMappingURL=all.css.map */

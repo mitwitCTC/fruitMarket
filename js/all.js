@@ -1,5 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-const API = 'https://30ef-114-32-150-22.ap.ngrok.io';
+const API = 'https://30de-114-32-150-22.ap.ngrok.io';
 
 // 表單驗證 必填
 VeeValidate.defineRule('required', VeeValidateRules['required']);
@@ -227,12 +227,17 @@ const app = Vue.createApp({
         // 搜尋用戶車籍
         searchMember(searchdata) {
             const searchMemberApi = `${API}/member/searchMember`;
+            const cantFindArea = document.querySelector('.cantFind-Area');
             axios
                 .post(searchMemberApi, { target: { searchdata: this.searchdata } })
                 .then((response) => {
                     // console.log(response.data);
                     // console.log(this.searchdata);
                     this.members = response.data;
+                    // console.log(this.members.length);
+                    this.members.length > 0 
+                    ? cantFindArea.classList.remove('block')
+                    : cantFindArea.classList.add('block');
                 })
                 .catch((error) => {
                     alert(error);
