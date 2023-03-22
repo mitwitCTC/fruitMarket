@@ -58,13 +58,15 @@
                     aria-labelledby="pills-member-tab">
                     <div class="content mt-2 mx-2">
                         <div class="row d-flex justify-content-around">
-                            <form class="d-flex mb-2 col-md-8 align-items-center">
+                            <div class="d-flex mb-2 col-md-8 align-items-center">
                                 <input class="form-control me-2" autofocus type="search"
-                                    placeholder="請輸入車號 (如: ABC-123 )、公司行號或姓名查詢" aria-label="Search"
-                                    v-model="searchdata" @keydown.enter="searchMember(searchdata)">
-                                    <i class="fa-solid fa-magnifying-glass fa-2xl search" style="color: #14ae5c;" @click="searchMember(searchdata)"></i>
-                            </form>
-                            <button type="button" class="btn btnMain mb-3 col-md-2" @click="openMemberModal('create')"
+                                    placeholder="請輸入車號 (如: ABC-123 )、公司行號或姓名查詢" aria-label="Search" v-model="searchdata"
+                                    @keyup.enter="searchMember(searchdata)">
+                                <button type="submit" style="border: none; background-color: #FFFFFF;">
+                                    <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #14ae5c;" @click="searchMember(searchdata)"></i>
+                                </button> 
+                            </div>
+                            <button type="button" class="btn btnMain mb-3 col-md-2"  @click="openMemberModal('create')"
                                 data-bs-target="#memberModal">
                                 新增
                             </button>

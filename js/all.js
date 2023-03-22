@@ -235,9 +235,9 @@ const app = Vue.createApp({
                     // console.log(this.searchdata);
                     this.members = response.data;
                     // console.log(this.members.length);
-                    this.members.length > 0 
-                    ? cantFindArea.classList.remove('block')
-                    : cantFindArea.classList.add('block');
+                    this.members.length > 0
+                        ? cantFindArea.classList.remove('block')
+                        : cantFindArea.classList.add('block');
                 })
                 .catch((error) => {
                     alert(error);
@@ -325,7 +325,7 @@ const app = Vue.createApp({
         updatePassword() {
             const updatePasswordApi = `${API}/users/updatePassword/${this.loginCheckData.id}`
             // console.log(updatePasswordApi);
-            if(this.updateUserCheckData.password === this.tempUser.newPassword){
+            if (this.updateUserCheckData.password === this.tempUser.newPassword) {
                 alert("新密碼不得與原密碼相同！")
             }
             else if (this.tempUser.newPassword === '' || this.tempUser.newPasswordCheck === '') {
@@ -383,7 +383,7 @@ const app = Vue.createApp({
                 .catch((error) => {
                     alert(error);
                 })
-        }
+        },
     },
 
     mounted() {

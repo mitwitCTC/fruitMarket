@@ -19,14 +19,15 @@ createApp({
         // login
         login() {
             axios
-                .post(loginApi, {target: this.users})
+                .post(loginApi, { target: this.users })
                 .then((response) => {
                     // console.log(response.data.data);
                     loginCheckData.account = response.data.data.account;
                     loginCheckData.userToken = response.data.data.token;
                     loginCheckData.id = response.data.data.id;
                     // console.log(loginCheckData.account, loginCheckData.id, loginCheckData.userToken);
-                    document.cookie =`userToken = ${loginCheckData.id}:${loginCheckData.account}:${loginCheckData.userToken};`;
+                    // Init
+                    document.cookie = `userToken = ${loginCheckData.id}:${loginCheckData.account}:${loginCheckData.userToken};`;
                     window.location = `index.html`;
                 })
                 .catch((error) => {
@@ -34,9 +35,9 @@ createApp({
                 })
         }
     },
-    mounted(){
-         // 讀取 Cookie 的函數
-         function getCookie(name) {
+    mounted() {
+        // 讀取 Cookie 的函數
+        function getCookie(name) {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
