@@ -1,5 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-const API = 'https://20e8-114-32-150-22.ap.ngrok.io';
+const API = 'https://96ea-114-32-150-22.ap.ngrok.io';
 
 // 表單驗證 必填
 VeeValidate.defineRule('required', VeeValidateRules['required']);
@@ -389,6 +389,26 @@ const app = Vue.createApp({
     mounted() {
         // axios.default.headers.common['Authorization'] = mitwitToken;
         this.loginCheck();
+        // 讀取 Cookie 的函數
+        setTimeout(() => {
+            function getCookie(name) {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(`${name}=`)) {
+                        return cookie.substring(name.length + 1);
+                    }
+                }
+                return null;
+            }
+
+            // 驗證過期，如果沒有 token ，則直接跳轉到 login 頁
+            const username = getCookie('userToken');
+            if (!username) {
+                alert("已自動登出，請重新登入");
+                window.location = `login.html`;
+            }
+        }, 600000)
         // 初始化 bootstrap modal
         memberModal = new bootstrap.Modal('#memberModal');
         delMemberModal = new bootstrap.Modal('#delMemberModal');

@@ -63,10 +63,11 @@
                                     placeholder="請輸入車號 (如: ABC-123 )、公司行號或姓名查詢" aria-label="Search" v-model="searchdata"
                                     @keyup.enter="searchMember(searchdata)">
                                 <button type="submit" style="border: none; background-color: #FFFFFF;">
-                                    <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #14ae5c;" @click="searchMember(searchdata)"></i>
-                                </button> 
+                                    <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #14ae5c;"
+                                        @click="searchMember(searchdata)"></i>
+                                </button>
                             </div>
-                            <button type="button" class="btn btnMain mb-3 col-md-2"  @click="openMemberModal('create')"
+                            <button type="button" class="btn btnMain mb-3 col-md-2" @click="openMemberModal('create')"
                                 data-bs-target="#memberModal">
                                 新增
                             </button>
@@ -129,7 +130,7 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <v-form v-slot="{ errors }" @submit="updateMember">
+                                        <v-form ref="memberForm" v-slot="{ errors }" @submit="updateMember">
                                             <div class="mb-3">
                                                 <label for="company_name" class="form-label">公司行號
                                                     <span class="text-danger">{{ isNewMember ? '*' : '' }}</span>
@@ -238,16 +239,27 @@
                                                 <error-message name="聯絡電話" class="invalid-feedback"></error-message>
                                             </div>
 
-                                            <div class="mb-3">
+                                            <div class="mb-3" v-if="isNewMember">
                                                 <label for="personnelcode" class="form-label">建立人員
                                                     <span class="text-danger">*</span>
                                                 </label>
-                                                <v-field id="personnelcode" name="員工代號" type="text" class="form-control"
-                                                    placeholder="請輸入員工代號" rules="required"
-                                                    :class="{ 'is-invalid': errors['員工代號']}"
+                                                <v-field id="personnelcode" name="建立人員員工代號" type="text"
+                                                    class="form-control" placeholder="請輸入建立人員員工代號" rules="required"
+                                                    :class="{ 'is-invalid': errors['建立人員員工代號']}"
                                                     v-model="tempMember.personnelcode">
                                                 </v-field>
-                                                <error-message name="員工代號" class="invalid-feedback"></error-message>
+                                                <error-message name="建立人員員工代號" class="invalid-feedback"></error-message>
+                                            </div>
+                                            <div class="mb-3" v-else>
+                                                <label for="revisepersonnel" class="form-label">修改人員
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <v-field id="revisepersonnel" name="修改人員員工代號" type="text"
+                                                    class="form-control" placeholder="請輸入修改人員員工代號" rules="required"
+                                                    :class="{ 'is-invalid': errors['修改人員員工代號']}"
+                                                    v-model="tempMember.revisepersonnel">
+                                                </v-field>
+                                                <error-message name="修改人員員工代號" class="invalid-feedback"></error-message>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-outline-secondary"
@@ -482,6 +494,19 @@
                                             <input id="department" name="部門" type="text" class="form-control"
                                                 placeholder="請輸入部門" v-model="tempUser.department">
                                         </div>
+
+                                        <div class="mb-3" v-if="isNewUser">
+                                            <label for="personnelcodeUser" class="form-label">建立人員
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <v-field id="personnelcodeUser" name="建立人員員工代號" type="text"
+                                                class="form-control" placeholder="請輸入建立人員員工代號" rules="required"
+                                                :class="{ 'is-invalid': errors['建立人員員工代號']}"
+                                                v-model="tempUser.personnelcodeUser">
+                                            </v-field>
+                                            <error-message name="建立人員員工代號" class="invalid-feedback"></error-message>
+                                        </div>
+                                        <div class="mb-3" v-else></div>
 
                                         <div class="modal-footer">
                                             <button type="submit" class="btn btnMain">
