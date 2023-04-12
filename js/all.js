@@ -137,13 +137,12 @@ const app = Vue.createApp({
                 })
         },
         // logout
-        loginOut() {
+        logout() {
             const logoutApi = `${API}/users/logout`;
             axios
                 .post(logoutApi)
                 .then(() => {
                     document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-                    alert("登出成功～")
                     window.location = `login.html`;
                 })
                 .catch((error) => {
@@ -381,6 +380,12 @@ const app = Vue.createApp({
                 .then(() => {
                     this.getUsers(); //刪除後重新取得使用者資料列表
                     delUserModal.hide();
+                    if (this.tempUser.account === this.loginCheckData.account) {
+                        alert("已刪除，請重新登入")
+                        this.logout();
+                    }else{
+                        alert("刪除成功～");
+                    }
                 })
                 .catch((error) => {
                     alert(error);
