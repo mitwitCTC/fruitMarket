@@ -158,10 +158,11 @@ const app = Vue.createApp({
         deleteSearch() {
             this.getMembers();
             const cantFindArea = document.querySelector('.cantFind-Area');
-            this.members.length > 0
-                ? cantFindArea.classList.remove('block')
-                : cantFindArea.classList.add('block');
-            console.log(this.members);
+            if (this.members.length > 0) {
+                cantFindArea.classList.remove('block')
+            } else {
+                cantFindArea.classList.add('block');
+            }
         },
         // 取得用戶車籍資料 (members)
         getMembers() {
@@ -383,7 +384,7 @@ const app = Vue.createApp({
                     if (this.tempUser.account === this.loginCheckData.account) {
                         alert("已刪除，請重新登入")
                         this.logout();
-                    }else{
+                    } else {
                         alert("刪除成功～");
                     }
                 })
