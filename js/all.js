@@ -156,11 +156,13 @@ const app = Vue.createApp({
             const phoneNumber = /^(09)[0-9]{8}$/
             return phoneNumber.test(value) ? true : '請確認聯絡電話格式'
         },
-        deleteSearch(){
-            const searchWord = document.getElementById('searchMember');
-            searchWord.value = "";
-            console.log(searchWord.value);
+        deleteSearch() {
             this.getMembers();
+            const cantFindArea = document.querySelector('.cantFind-Area');
+            this.members.length > 0
+                ? cantFindArea.classList.remove('block')
+                : cantFindArea.classList.add('block');
+            console.log(this.members);
         },
         // 取得用戶車籍資料 (members)
         getMembers() {
