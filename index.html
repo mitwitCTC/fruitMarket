@@ -45,7 +45,7 @@
                         </li>
                     </ul>
                     <div class="d-flex flex-column me-5">
-                        <span class="text-white mb-3">{{ today }}</span>
+                        <span class="text-white mb-3" id="current"></span>
                         <button type="button" class="btn text-white text-center" @click="loginOut">登出
                             <span>{{this.loginCheckData.account}}</span>
                         </button>
@@ -58,8 +58,10 @@
                     aria-labelledby="pills-member-tab">
                     <div class="content mt-2 mx-2">
                         <div class="row d-flex justify-content-around">
+                            <button type="button" class="btn btnMain mb-3 col-md-1 text-white"
+                                @click="deleteSearch">清除搜尋結果</button>
                             <div class="d-flex mb-2 col-md-8 align-items-center">
-                                <input class="form-control me-2" autofocus type="search"
+                                <input id="searchMember" class="form-control me-2" autofocus type="search"
                                     placeholder="請輸入車號 (如: ABC-123 )、公司行號或姓名查詢" aria-label="Search" v-model="searchdata"
                                     @keyup.enter="searchMember(searchdata)">
                                 <button type="submit" style="border: none; background-color: #FFFFFF;">
@@ -67,7 +69,8 @@
                                         @click="searchMember(searchdata)"></i>
                                 </button>
                             </div>
-                            <button type="button" class="btn btnMain mb-3 col-md-2" @click="openMemberModal('create')"
+
+                            <button type="button" class="btn btnMain mb-3 col-md-1" @click="openMemberModal('create')"
                                 data-bs-target="#memberModal">
                                 新增
                             </button>
@@ -117,7 +120,7 @@
                             <img src="./images/searchNotFound.png" alt="">
                         </div>
                         <!-- memberModal 新增修改用戶車籍-->
-                        <div id="memberModal" ref="memberModal" class="modal fade" tabindex="-1"
+                        <div id="memberModal" ref="memberModal" class="modal fade memberModal" tabindex="-1"
                             aria-labelledby="memberModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                                 <div class="modal-content border-0">
@@ -130,14 +133,15 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <v-form ref="memberForm" v-slot="{ errors }" @submit="updateMember">
+                                        <v-form v-slot="{ errors,resetForm }" class="memberModalForm"
+                                            @submit="updateMember">
                                             <div class="mb-3">
                                                 <label for="company_name" class="form-label">公司行號
                                                     <span class="text-danger">{{ isNewMember ? '*' : '' }}</span>
                                                 </label>
-                                                <v-field id="company_name" name="公司行號" type="text" class="form-control"
-                                                    placeholder="請輸入完整的公司行號" rules="required"
-                                                    :class="{ 'is-invalid': errors['公司行號']}"
+                                                <v-field ref="member_company_name" id="company_name" name="公司行號"
+                                                    type="text" class="form-control" placeholder="請輸入完整的公司行號"
+                                                    rules="required" :class="{ 'is-invalid': errors['公司行號']}"
                                                     :disabled="isNewMember ? false : true"
                                                     v-model="tempMember.company_name">
                                                 </v-field>
@@ -518,86 +522,7 @@
                                             </button>
                                         </div>
                                     </v-form>
-                                    <!-- <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="mb-3">
-                                                <label for="account" class="form-label">登入帳號<strong class="text-danger">
-                                                        *</strong></label>
-                                                <input id="account" type="text" class="form-control"
-                                                    placeholder="請輸入登入帳號" v-model="tempUser.account">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="mb-3">
-                                                <label for="account" class="form-label">登入密碼<strong class="text-danger">
-                                                        *</strong></label>
-                                                <input id="password" type="password" class="form-control"
-                                                    placeholder="請輸入密碼，若未輸入，預設為1234" v-model="tempUser.password">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="name" class="form-label">姓名<strong class="text-danger">
-                                                    *</strong></label>
-                                            <input id="name" type="text" class="form-control" placeholder="請輸入姓名"
-                                                v-model="tempUser.name">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="phone" class="form-label">聯絡電話<strong class="text-danger">
-                                                    *</strong></label>
-                                            <input id="phone" type="text" class="form-control" placeholder="請輸入聯絡電話"
-                                                v-model="tempUser.phone">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="department" class="form-label">部門</label>
-                                            <input id="department" type="text" class="form-control" placeholder="請輸入部門"
-                                                v-model="tempUser.department">
-                                        </div>
-                                    </div> -->
                                 </div>
-                                <!-- <div class="modal-body" v-else>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="mb-3">
-                                                <label for="account" class="form-label">登入帳號</label>
-                                                <input id="account" type="text" class="form-control" disabled
-                                                    placeholder="請輸入登入帳號" v-model="tempUser.account">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="name" class="form-label">姓名<strong
-                                                    class="text-danger">*</strong></label>
-                                            <input id="name" type="text" class="form-control" placeholder="請輸入姓名"
-                                                v-model="tempUser.name">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="phone" class="form-label">聯絡電話<strong
-                                                    class="text-danger">*</strong></label>
-                                            <input id="phone" type="text" class="form-control" placeholder="請輸入聯絡電話"
-                                                v-model="tempUser.phone">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-3 col-md-8">
-                                            <label for="department" class="form-label">部門</label>
-                                            <input id="department" type="text" class="form-control" placeholder="請輸入部門"
-                                                v-model="tempUser.department">
-                                        </div>
-                                    </div>
-                                </div> -->
-
-
                             </div>
                         </div>
                     </div>
@@ -688,6 +613,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.5.8/dist/vee-validate-rules.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.5.8/dist/vee-validate-i18n.min.js"></script>
     <script src="./js/all.js" type="module"></script>
+    <script>
+        function current_time() {
+            const NowDate = new Date();
+            const y = NowDate.getFullYear();
+            const mm = NowDate.getMonth() + 1;
+            const dd = NowDate.getDate();
+            const h = NowDate.getHours();
+            const m = NowDate.getMinutes();
+            const s = NowDate.getSeconds();
+            document.getElementById('current').innerHTML = y + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + h + ' 時 ' + m + ' 分 ' + s + ' 秒';
+            setTimeout('current_time()', 1000);
+        }
+        current_time();
+
+    </script>
 </body>
 
 </html>

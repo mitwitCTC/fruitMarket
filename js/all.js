@@ -1,5 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-const API = 'https://96ea-114-32-150-22.ap.ngrok.io';
+const API = 'https://fed2-114-32-150-22.ngrok-free.app';
 
 // 表單驗證 必填
 VeeValidate.defineRule('required', VeeValidateRules['required']);
@@ -43,7 +43,6 @@ const app = Vue.createApp({
                 account: '',
                 token: '',
             },
-            today: new Date().toLocaleString(),
             // 用戶車籍
             members: [],
             tempMember: {},
@@ -111,16 +110,13 @@ const app = Vue.createApp({
             // 判斷哪一個使用者登入了
             const username = getCookie('userToken');
             if (username) {
-                // console.log(username.split(':'));
                 this.loginCheckData.id = username.split(':')[0];
                 this.loginCheckData.account = username.split(':')[1];
                 this.loginCheckData.token = username.split(':')[2];
-                // console.log(this.loginCheckData);
-                // console.log(`登入帳號為：`,this.loginCheckData.account);
-                // console.log(`token為：`,this.loginCheckData.token);
             }
 
             const loginCheckApi = `${API}/users/loginCheck`;
+
             axios
                 .post(loginCheckApi, { target: this.loginCheckData })
                 .then((response) => {
@@ -134,14 +130,12 @@ const app = Vue.createApp({
                         alert("尚未登入，請重新登入");
                         window.location = `login.html`;
                     }
-
                 })
                 .catch((error) => {
                     alert(error);
                     window.location = `login.html`;
                 })
         },
-
         // logout
         loginOut() {
             const logoutApi = `${API}/users/logout`;
@@ -149,6 +143,7 @@ const app = Vue.createApp({
                 .post(logoutApi)
                 .then(() => {
                     document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    alert("登出成功～")
                     window.location = `login.html`;
                 })
                 .catch((error) => {
@@ -161,7 +156,12 @@ const app = Vue.createApp({
             const phoneNumber = /^(09)[0-9]{8}$/
             return phoneNumber.test(value) ? true : '請確認聯絡電話格式'
         },
-
+        deleteSearch(){
+            const searchWord = document.getElementById('searchMember');
+            searchWord.value = "";
+            console.log(searchWord.value);
+            this.getMembers();
+        },
         // 取得用戶車籍資料 (members)
         getMembers() {
             axios
@@ -401,11 +401,10 @@ const app = Vue.createApp({
                 }
                 return null;
             }
-
             // 驗證過期，如果沒有 token ，則直接跳轉到 login 頁
             const username = getCookie('userToken');
             if (!username) {
-                alert("已自動登出，請重新登入");
+                alert("已自動登出");
                 window.location = `login.html`;
             }
         }, 600000)
