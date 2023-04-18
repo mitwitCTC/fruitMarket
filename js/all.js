@@ -1,5 +1,5 @@
 import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-const API = 'https://fed2-114-32-150-22.ngrok-free.app';
+const API = 'https://00cb-114-32-150-22.ngrok-free.app';
 
 // 表單驗證 必填
 VeeValidate.defineRule('required', VeeValidateRules['required']);
@@ -271,8 +271,16 @@ const app = Vue.createApp({
         },
         // 開啟刪除使用者 (user) modal
         openDelUserModal(user) {
-            delUserModal.show();
             this.tempUser = { ...user };
+            if (this.loginCheckData.id === "1"){
+                if(this.tempUser.id === 1){
+                    alert("無法刪除管理員！")
+                }else{
+                    delUserModal.show();
+                }
+            }else {
+                alert("無權限刪除使用者，請洽管理員！")
+            }
         },
         // 新增/修改使用者
         updateUser() {
@@ -380,7 +388,7 @@ const app = Vue.createApp({
                     if (this.tempUser.account === this.loginCheckData.account) {
                         alert("已刪除，請重新登入")
                         this.logout();
-                    }else{
+                    } else {
                         alert("刪除成功～");
                     }
                 })
